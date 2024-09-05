@@ -1,24 +1,31 @@
 module utilities
- 
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !
+    ! Classical prime finding algorithms
+    !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
     contains 
 
     subroutine eratostheneses_sieve(max, found, primes)
+        ! Classical O(log(log(n))) algorithm
         ! INPUT:
         ! max: an arbitrary number 
         ! OUTPUT:
         ! found: the number of primes less than max
         ! primes: an array of the found primes  
         ! INTERNAL: 
-        ! mask: an array of logicals representing whether prime or not 
-        
+        ! mask: an array of logicals representing whether prime or not
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         implicit none
 
-        integer :: i, j
-        integer, intent(in) :: max
-        integer, intent(out) :: found
+        integer :: i, j                 ! counters
+        integer, intent(in) :: max      ! the upper number
+        integer, intent(out) :: found   ! total fonud
         integer, intent(inout), allocatable, dimension(:) :: primes
-        integer :: msqr
-        logical, dimension(max) :: mask
+                                        ! the array of primes
+        integer :: msqr                 ! probably unnecessary
+        logical, dimension(max) :: mask ! is prime boolan mask
 
         ! set the array of bools to the total number
         mask = .true.
@@ -28,6 +35,7 @@ module utilities
         ! get the floored square root
         msqr = INT(SQRT(REAL(max)))
 
+        ! the seive, paralleled
         !$OMP PARALLEL DO PRIVATE(j)
         do i = 2, msqr
             if (mask(i)) then
@@ -40,9 +48,10 @@ module utilities
         enddo
         !$OMP END PARALLEL DO
 
+        ! total number of positives in the mask
         found = COUNT(mask)
-        allocate(primes(found))
-
+        allocate(primes(found))     ! finally
+        ! prime array is index of true mask elements:
         j = 0
         do i = 1, max
             if (mask(i)) then
@@ -53,16 +62,23 @@ module utilities
 
     end subroutine eratostheneses_sieve
 
-    subroutine is_prime(num, ans)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+    subroutine is_prime(num, ans)
+        ! a quick & dirty test for the above
+        ! INPUT:
+        ! num: we want to know if this is prime.
+        ! OUTPUT: 
+        ! ans: yes or no.
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         implicit none
 
-        integer, intent(in) :: num
-        logical, intent(out) :: ans
-        integer :: i
+        integer, intent(in) :: num      ! the question
+        logical, intent(out) :: ans     ! the answer
+        integer :: i                    ! a cunter
 
         if (num < 2) then
-            ans = .false.
+            ans = .false.           ! all numbers less than two are not prime
         else if (num == 2) then
             ans = .true.
         else 

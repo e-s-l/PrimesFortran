@@ -1,21 +1,27 @@
 program prime_finder
-
-    ! import module for desired prime finder method
-    use utilities
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !
+    ! Find all primes less than a given number
+    !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+    use utilities ! import module for desired prime finder method & tests
 
     implicit none
 
-    integer :: found ! found is how many
-    integer :: max ! max is upper limit
-    integer, allocatable, dimension(:) :: primes ! array of primes
-    integer :: i
-    logical :: tests, answ
+    integer :: found                                ! found is how many
+    integer :: max                                  ! max is upper limit
+    integer, allocatable, dimension(:) :: primes    ! array of primes
+    integer :: i                                    ! counter
+    logical :: tests, answ                          ! do we test?
 
-    max = 1000000000
+    !!!!!!!!!!!!!
+    max = 1000000
+    !!!!!!!!!!!!!
     ! adapt so max is user input
-   ! print *, "To what upper limit shall we count the primes?"
-   ! read (*, *) max
-    print *, max, "? OK."
+    ! print *, "To what upper limit shall we count the primes?"
+    ! read (*, *) max
+    ! print *, max, "? OK."
 
     call eratostheneses_sieve(max, found, primes)
 

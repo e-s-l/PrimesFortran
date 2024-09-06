@@ -4,6 +4,10 @@
 
 How quick will it be?
 
+## Note
+
+OMP operative seems to slow down the operations. Maybe inappropriate place for it.
+
 ## Set-up
 
 Compile using gfortran:

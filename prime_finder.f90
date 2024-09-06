@@ -16,7 +16,7 @@ program prime_finder
     logical :: tests, answ                          ! do we test?
 
     !!!!!!!!!!!!!
-    max = 1000000
+    max = 10000000
     !!!!!!!!!!!!!
     ! adapt so max is user input
     ! print *, "To what upper limit shall we count the primes?"
@@ -27,7 +27,9 @@ program prime_finder
 
     print *, "Found: ", found
     
+    !!!!!!!!
     ! tests
+    !!!!!!!!
     tests = .false.
     if (tests) then
         do i=1,found

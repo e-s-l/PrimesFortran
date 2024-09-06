@@ -1,5 +1,5 @@
 module utilities
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     !
     ! Classical prime finding algorithms
     !
@@ -8,6 +8,7 @@ module utilities
     contains 
 
     subroutine eratostheneses_sieve(max, found, primes)
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ! Classical O(log(log(n))) algorithm
         ! INPUT:
         ! max: an arbitrary number 
@@ -36,7 +37,7 @@ module utilities
         msqr = INT(SQRT(REAL(max)))
 
         ! the seive, paralleled
-        !$OMP PARALLEL DO PRIVATE(j)
+        !!$OMP PARALLEL DO PRIVATE(j)
         do i = 2, msqr
             if (mask(i)) then
                 j = i**2
@@ -46,11 +47,11 @@ module utilities
                 enddo
             endif
         enddo
-        !$OMP END PARALLEL DO
+        !!$OMP END PARALLEL DO
 
         ! total number of positives in the mask
         found = COUNT(mask)
-        allocate(primes(found))     ! finally
+        allocate(primes(found))             ! finally
         ! prime array is index of true mask elements:
         j = 0
         do i = 1, max
@@ -65,6 +66,7 @@ module utilities
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     subroutine is_prime(num, ans)
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ! a quick & dirty test for the above
         ! INPUT:
         ! num: we want to know if this is prime.

@@ -29,9 +29,8 @@ module utilities
         logical, dimension(max) :: mask ! is prime boolan mask
 
         ! set the array of bools to the total number
-        mask = .true.
-        ! and make it true!
-        mask(1) = .false. ! except of course
+        mask = .true.           ! and make it true!
+        mask(1) = .false.       ! except of course
 
         ! get the floored square root
         msqr = INT(SQRT(REAL(max)))
@@ -77,7 +76,7 @@ module utilities
 
         integer, intent(in) :: num      ! the question
         logical, intent(out) :: ans     ! the answer
-        integer :: i                    ! a cunter
+        integer :: i                    ! a counter
 
         if (num < 2) then
             ans = .false.           ! all numbers less than two are not prime

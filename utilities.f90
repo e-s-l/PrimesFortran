@@ -20,9 +20,11 @@ module utilities
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         implicit none
 
-        integer :: i, j                 ! counters
-        integer, intent(in) :: max      ! the upper number
-        integer, intent(out) :: found   ! total fonud
+        integer :: i, j                 ! counters   
+        integer, parameter :: i32 = selected_int_kind(32)
+        integer(kind = i32), intent(in) :: max ! the upper number
+
+        integer(kind = i32), intent(out) :: found   ! total found
         logical, dimension(max) :: mask ! is prime boolan mask
 
         ! set the array of bools to the total number
@@ -30,18 +32,24 @@ module utilities
         mask(1) = .false.       ! except of course
 
 
-        ! the seive, paralleled
-        !$OMP PARALLEL DO PRIVATE(j)
-        do i = 2, INT(SQRT(REAL(max)))
-            if (mask(i)) then
-                j = i**2
-                do while (j <= max)
-                    mask(j) = .false.
-                    j = j + i
-                enddo
+        ! the seive
+        do i = 2, max
+            if (i.lt.INT(SQRT(REAL(max)))) then
+                if (mask(i)) then
+                    j = i**2
+                    do while (j <= max)
+                        mask(j) = .false.
+                        j = j + i
+                    enddo
+                endif
             endif
-        enddo
-        !$OMP END PARALLEL DO
+             if (mask(i)) then
+                write(*, fmt="(1x,i12,a)", advance="no") i, ','
+                ! NOTE: formatting assumes numbers less than 10**13
+            endif
+        enddo 
+      
+        write(*,*)                  ! formatting...
 
         ! total number of positives in the mask
         found = COUNT(mask)
@@ -107,8 +115,6 @@ module utilities
     end subroutine eratostheneses_sieve_v1
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 
     subroutine is_prime(num, ans)
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -16,11 +16,12 @@ program prime_finder
     integer(kind = i32) :: max                      ! max is upper limit
     integer(kind = i32) :: found                    ! found is how many
 
-
-
     !!!!!!!!!!!!!
-    max = 10000000000
-    ! NOTE: compilier freaks out at 10**10
+    max = 1000000000
+    ! for max = 10**9, found = 
+    ! NOTE: 
+    ! compilier freaks out at 10**10 for eratostheneses v2
+    ! atkins seive sigsegv (memory) for 10**9, sometimes
     !!!!!!!!!!!!!
     ! adapt so max is user input
     ! print *, "To what upper limit shall we count the primes?"
@@ -28,10 +29,12 @@ program prime_finder
     ! print *, max, "? OK."
     !!!!!!!!!!!!!
 
-    call eratostheneses_sieve(max, found)
+    !call eratostheneses_sieve(max, found)
     ! NOTE: this version does NOT return an array of primes
     ! so the test below cannot be implemeneted.
 
+    !
+    call atkins_sieve_v1(max, found)
 
     !!!
     ! NOTE: formatting assumes numbers less than 10**13

@@ -7,7 +7,51 @@ module utilities
     
     contains 
 
-    subroutine eratostheneses_sieve(max, found, primes)
+    subroutine eratostheneses_sieve(max, found)
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! Classical O(log(log(n))) algorithm
+        ! INPUT:
+        ! max: an arbitrary number 
+        ! OUTPUT:
+        ! found: the number of primes less than max
+        ! primes: an array of the found primes  
+        ! INTERNAL: 
+        ! mask: an array of logicals representing whether prime or not
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        implicit none
+
+        integer :: i, j                 ! counters
+        integer, intent(in) :: max      ! the upper number
+        integer, intent(out) :: found   ! total fonud
+        logical, dimension(max) :: mask ! is prime boolan mask
+
+        ! set the array of bools to the total number
+        mask = .true.           ! and make it true!
+        mask(1) = .false.       ! except of course
+
+
+        ! the seive, paralleled
+        !$OMP PARALLEL DO PRIVATE(j)
+        do i = 2, INT(SQRT(REAL(max)))
+            if (mask(i)) then
+                j = i**2
+                do while (j <= max)
+                    mask(j) = .false.
+                    j = j + i
+                enddo
+            endif
+        enddo
+        !$OMP END PARALLEL DO
+
+        ! total number of positives in the mask
+        found = COUNT(mask)
+
+    end subroutine eratostheneses_sieve
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+    subroutine eratostheneses_sieve_v1(max, found, primes)
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ! Classical O(log(log(n))) algorithm
         ! INPUT:
@@ -60,9 +104,11 @@ module utilities
             end if
         end do
 
-    end subroutine eratostheneses_sieve
+    end subroutine eratostheneses_sieve_v1
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 
     subroutine is_prime(num, ans)
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

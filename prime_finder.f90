@@ -16,14 +16,14 @@ program prime_finder
     logical :: tests, answ                          ! do we test?
 
     !!!!!!!!!!!!!
-    max = 10000000
+    max = 1000000000
     !!!!!!!!!!!!!
     ! adapt so max is user input
     ! print *, "To what upper limit shall we count the primes?"
     ! read (*, *) max
     ! print *, max, "? OK."
 
-    call eratostheneses_sieve(max, found, primes)
+    call eratostheneses_sieve(max, found)
 
     print *, "Found: ", found
     

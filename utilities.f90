@@ -148,76 +148,6 @@ module utilities
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    ! this is producing the wrong values!!!
-
-    subroutine atkins_sieve(max, found)
-        implicit none
-        
-        integer, parameter :: i32 = selected_int_kind(32)
-        integer(kind = i32), intent(in) :: max
-        integer(kind = i32), intent(out) :: found
-        logical, dimension(max) :: mask
-        integer(kind = i32) :: x2, y2, n, i, j, msqrt
-
-        mask = .false.
-
-        msqrt = int(sqrt(real(max)))
-
-        if (max.ge.2) then
-            mask(2) = .true.
-        end if
-        if (max.ge.3) then
-            mask(3) = .true.
-        end if
-
-        do i = 4, max
-
-            if (i.lt.msqrt) then
-                x2 = i * i
-                do j = 1, msqrt
-                    y2 = j * j
-
-                    n = 4 * x2 + y2
-                    if (n .le. max .and. (mod(n, 12) .eq. 1 .or. mod(n, 12) .eq. 5)) then
-                        mask(n) = .not. mask(n)
-                    end if
-
-                    n = 3 * x2 + y2
-                    if (n .le. max .and. mod(n, 12) .eq. 7) then
-                        mask(n) = .not. mask(n)
-                    end if
-
-                    if (i > j) then
-                        n = 3 * x2 - y2
-                        if (n .le. max .and. mod(n, 12) .eq. 11) then
-                            mask(n) = .not. mask(n)
-                        end if
-                    end if
-                end do
-            end if
-
-            if( i .ge. 5 .and. i .le. msqrt) then
-                if (mask(i)) then
-                    n = i * i
-                    do j = n, max, n
-                        mask(j) = .false.
-                    end do
-                end if
-            end if
-
-             if (mask(i)) then
-                write(*, fmt="(1x,i12,a)", advance="no") i, ','
-            endif
-
-        end do
-        
-        write(*,*) ! formatting...
-
-        found = COUNT(mask)
-
-    end subroutine atkins_sieve
-
-    ! this one works...
     subroutine atkins_sieve_v1(max, found)
         !!!!!!!!!!!!!!!!!!!!!!!!!
         ! a O(n) sieve method... 
@@ -280,14 +210,13 @@ module utilities
     
         mask(2:3) = .true.
 
-        do i = 2, max
-         if (mask(i)) then
-                write(*, fmt="(1x,i12,a)", advance="no") i, ','
-                ! NOTE: formatting assumes numbers less than 10**13
-            endif
-        end do
-
-        write(*,*)                  ! formatting...
+    !    do i = 2, max
+    !     if (mask(i)) then
+    !            write(*, fmt="(1x,i12,a)", advance="no") i, ','
+    !            ! NOTE: formatting assumes numbers less than 10**13
+    !        endif
+    !    end do
+    !    write(*,*)                  ! formatting...
         ! total number of positives in the mask
         found = COUNT(mask)
 

@@ -7,13 +7,13 @@ module utilities
     
     contains 
 
-    subroutine eratostheneses_sieve(max, found)
+    subroutine eratostheneses_sieve(limit, found)
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ! Classical O(log(log(n))) algorithm
         ! INPUT:
-        ! max: an arbitrary number 
+        ! limit: an arbitrary number 
         ! OUTPUT:
-        ! found: the number of primes less than max
+        ! found: the number of primes less than limit
         ! primes: an array of the found primes  
         ! INTERNAL: 
         ! mask: an array of logicals representing whether prime or not
@@ -22,9 +22,9 @@ module utilities
 
         integer, parameter :: i32 = selected_int_kind(32)
         integer :: i, j                 ! counters   
-        integer(kind = i32), intent(in) :: max ! the upper number
+        integer(kind = i32), intent(in) :: limit ! the upper number
         integer(kind = i32), intent(out) :: found   ! total found
-        logical, dimension(max) :: mask ! is prime boolan mask
+        logical, dimension(limit) :: mask ! is prime boolan mask
 
         ! set the array of bools to the total number
         mask = .true.           ! and make it true!
@@ -32,11 +32,11 @@ module utilities
 
 
         ! the seive
-        do i = 2, max
-            if (i.lt.INT(SQRT(REAL(max)))) then
+        do i = 2, limit
+            if (i.lt.INT(SQRT(REAL(limit)))) then
                 if (mask(i)) then
                     j = i**2
-                    do while (j <= max)
+                    do while (j <= limit)
                         mask(j) = .false.
                         j = j + i
                     enddo
@@ -57,13 +57,13 @@ module utilities
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    subroutine eratostheneses_sieve_v1(max, found, primes)
+    subroutine eratostheneses_sieve_v1(limit, found, primes)
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ! Classical O(log(log(n))) algorithm
         ! INPUT:
-        ! max: an arbitrary number 
+        ! limit: an arbitrary number 
         ! OUTPUT:
-        ! found: the number of primes less than max
+        ! found: the number of primes less than limit
         ! primes: an array of the found primes  
         ! INTERNAL: 
         ! mask: an array of logicals representing whether prime or not
@@ -71,26 +71,26 @@ module utilities
         implicit none
 
         integer :: i, j                 ! counters
-        integer, intent(in) :: max      ! the upper number
+        integer, intent(in) :: limit      ! the upper number
         integer, intent(out) :: found   ! total fonud
         integer, intent(inout), allocatable, dimension(:) :: primes
                                         ! the array of primes
         integer :: msqr                 ! probably unnecessary
-        logical, dimension(max) :: mask ! is prime boolan mask
+        logical, dimension(limit) :: mask ! is prime boolan mask
 
         ! set the array of bools to the total number
         mask = .true.           ! and make it true!
         mask(1) = .false.       ! except of course
 
         ! get the floored square root
-        msqr = INT(SQRT(REAL(max)))
+        msqr = INT(SQRT(REAL(limit)))
 
         ! the seive, paralleled
         !!$OMP PARALLEL DO PRIVATE(j)
         do i = 2, msqr
             if (mask(i)) then
                 j = i**2
-                do while (j <= max)
+                do while (j <= limit)
                     mask(j) = .false.
                     j = j + i
                 enddo
@@ -103,7 +103,7 @@ module utilities
         allocate(primes(found))             ! finally
         ! prime array is index of true mask elements:
         j = 0
-        do i = 1, max
+        do i = 1, limit
             if (mask(i)) then
                 j = j + 1
                 primes(j) = i
@@ -148,7 +148,7 @@ module utilities
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    subroutine atkins_sieve_v1(max, found)
+    subroutine atkins_sieve_v1(limit, found)
         !!!!!!!!!!!!!!!!!!!!!!!!!
         ! a O(n) sieve method... 
         ! let's see
@@ -157,7 +157,7 @@ module utilities
         implicit none
            
         integer, parameter :: i32 = selected_int_kind(32)
-        integer(kind = i32), intent(in) :: max ! the upper number
+        integer(kind = i32), intent(in) :: limit ! the upper number
         integer(kind = i32), intent(out) :: found   ! total found
         logical, allocatable, dimension(:) :: mask       ! is prime boolan mask
         integer(kind = i32) :: x2, y2, n, i, j, msqrt           ! counters etc.
@@ -166,10 +166,10 @@ module utilities
     !    integer(kind=i64) :: limit, x2, y2, n, i, j, sqrt_limit, prime_count
     !    logical, allocatable :: sieve(:)
 
-        allocate(mask(0:max))
+        allocate(mask(0:limit))
         mask = .false.
 
-        msqrt = int(sqrt(real(max)))
+        msqrt = int(sqrt(real(limit)))
 
         do i = 1, msqrt
             x2 = i * i
@@ -178,20 +178,20 @@ module utilities
 
                 !
                 n = 4 * x2 + y2
-                if (n.le.max.and.(mod(n, 12).eq.1.or.mod(n, 12).eq.5)) then
+                if (n.le.limit.and.(mod(n, 12).eq.1.or.mod(n, 12).eq.5)) then
                     mask(n) = .not.mask(n)
                 end if
 
                 ! 
                 n = 3 * x2 + y2
-                if (n.le.max.and.(mod(n, 12).eq.7)) then
+                if (n.le.limit.and.(mod(n, 12).eq.7)) then
                     mask(n) = .not. mask(n)
                 end if
 
                 !
                 if (i.gt.j) then
                     n = 3 * x2 - y2
-                    if (n.le.max.and.(mod(n, 12).eq.11)) then
+                    if (n.le.limit.and.(mod(n, 12).eq.11)) then
                         mask(n) = .not. mask(n)
                     end if
                 end if
@@ -202,7 +202,7 @@ module utilities
         do i = 5, msqrt
             if (mask(i)) then
                 n = i * i
-                do j = n, max, n
+                do j = n, limit, n
                     mask(j) = .false.
                 end do
             end if
@@ -210,7 +210,7 @@ module utilities
     
         mask(2:3) = .true.
 
-    !    do i = 2, max
+    !    do i = 2, limit
     !     if (mask(i)) then
     !            write(*, fmt="(1x,i12,a)", advance="no") i, ','
     !            ! NOTE: formatting assumes numbers less than 10**13
